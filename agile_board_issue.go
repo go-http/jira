@@ -1,16 +1,24 @@
 package jira
 
 import (
+	"fmt"
 	"net/url"
 )
 
 // AgileBoardIssue 返回指定Board的Issue列表
-func (cli *Client) AgileBoardIssue(boardId string, query url.Values) ([]*Issue, error) {
+func (cli *Client) AgileBoardIssue(boardId int, jql string) ([]*Issue, error) {
 	var respInfo struct {
 		CommonResponse
 		Issues []*Issue
 	}
-	err := cli.Request("GET", "/rest/agile/1.0/board/"+boardId+"/issue", query, &respInfo)
+
+	var query url.Values
+	if jql != "" {
+		query = url.Values{}
+		query.Set("jql", jql)
+	}
+
+	err := cli.Request("GET", fmt.Sprintf("/rest/agile/1.0/board/%d/issue", boardId), query, &respInfo)
 	if err != nil {
 		return nil, err
 	}
