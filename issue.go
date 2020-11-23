@@ -84,6 +84,10 @@ type Issue struct {
 }
 
 func (issue *Issue) ParseAttributes() error {
+	if issue.Fields == nil {
+		return nil
+	}
+
 	attr := IssueAttributes{}
 	err := json.Unmarshal(issue.Fields, &attr)
 	if err != nil {
