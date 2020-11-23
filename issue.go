@@ -72,6 +72,8 @@ type IssueAttributes struct {
 }
 
 type Issue struct {
+	*Client
+
 	IssueAttributes
 
 	Id     string

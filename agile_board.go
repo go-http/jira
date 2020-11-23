@@ -6,6 +6,8 @@ import (
 )
 
 type Board struct {
+	*Client
+
 	Id   int
 	Self string
 	Name string
@@ -38,6 +40,10 @@ func (cli *Client) AgileBoard(boardType, name, projectKeyOrId string) ([]*Board,
 	err := cli.Request("GET", "/rest/agile/1.0/board", query, &respInfo)
 	if err != nil {
 		return nil, err
+	}
+
+	for _, board := range respInfo.Values {
+		board.Client = cli
 	}
 
 	return respInfo.Values, nil

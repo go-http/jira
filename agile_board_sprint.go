@@ -7,6 +7,8 @@ import (
 )
 
 type Sprint struct {
+	*Board
+
 	Id            int
 	Self          string
 	Name          string
@@ -17,8 +19,8 @@ type Sprint struct {
 	OriginBoardId int
 }
 
-// AgileBoardSprint 返回Board中的Sprint列表
-func (cli *Client) AgileBoardSprint(boardId int, states ...string) ([]*Sprint, error) {
+// Sprint 返回Board的Sprint列表
+func (board *Board) Sprint(states ...string) ([]*Sprint, error) {
 	var respInfo struct {
 		CommonResponse
 		Values []*Sprint
@@ -34,9 +36,13 @@ func (cli *Client) AgileBoardSprint(boardId int, states ...string) ([]*Sprint, e
 		"state": {strings.Join(states, ",")},
 	}
 
-	err := cli.Request("GET", fmt.Sprintf("/rest/agile/1.0/board/%d/sprint", boardId), query, &respInfo)
+	err := board.Request("GET", fmt.Sprintf("/rest/agile/1.0/board/%d/sprint", board.Id), query, &respInfo)
 	if err != nil {
 		return nil, err
+	}
+
+	for _, sprint := range respInfo.Values {
+		sprint.Board = board
 	}
 
 	return respInfo.Values, nil

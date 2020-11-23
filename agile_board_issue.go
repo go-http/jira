@@ -5,8 +5,8 @@ import (
 	"net/url"
 )
 
-// AgileBoardIssue 返回指定Board的Issue列表
-func (cli *Client) AgileBoardIssue(boardId int, jql string) ([]*Issue, error) {
+// Issue 返回Board的Issue列表
+func (board *Board) Issue(jql string) ([]*Issue, error) {
 	var respInfo struct {
 		CommonResponse
 		Issues []*Issue
@@ -18,7 +18,7 @@ func (cli *Client) AgileBoardIssue(boardId int, jql string) ([]*Issue, error) {
 		query.Set("jql", jql)
 	}
 
-	err := cli.Request("GET", fmt.Sprintf("/rest/agile/1.0/board/%d/issue", boardId), query, &respInfo)
+	err := board.Request("GET", fmt.Sprintf("/rest/agile/1.0/board/%d/issue", board.Id), query, &respInfo)
 	if err != nil {
 		return nil, err
 	}
